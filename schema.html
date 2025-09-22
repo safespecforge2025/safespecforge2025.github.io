@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SafeSpecForge</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS for the '3 Col Portfolio' Template -->
+    <link href="css/3-col-portfolio.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://safespecforge2025.github.io">SafeSpecForge</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="schema.html">Spec Schema</a></li>
+            <li><a href="index.html">Spec Sample</a></li>
+            <li><a href="sourcecode.html">Source Code</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container -->
+    </nav>
+
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-lg-12">
+          <h1 class="page-header">SafeSpecForge <small>Design of SafeSpecForge's Schema</small></h1>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <h2>
+            EBNF Formalism of the Schema
+          </h2>
+          <pre><code>
+     specification ::= "rule-ODD" string_literal
+                       "trigger" event
+                       "rule if" event "then" action
+                       "exit-trigger" event
+        
+             event ::= expression
+
+        expression ::= term ( "or" term )*
+
+              term ::= factor ( "and" factor )*
+
+            factor ::= "not" factor | primary
+
+           primary ::= atomic_predicate | "(" expression ")"
+
+  atomic_predicate ::= variable comparison value
+
+          variable ::= av_state_var | npc_state_var | av_context_var | av_interaction_var
+
+      av_state_var ::= identifier  // e.g., "av_speed"
+
+     npc_state_var ::= identifier  // e.g., "npc_position"
+
+    av_context_var ::= identifier  // e.g., "traffic_light"
+
+av_interaction_var ::= identifier  // e.g., "av_npc_collision"
+ 
+            action ::= speed_action | dist_action | other_action
+
+        identifier ::= letter ( letter | digit )*  
+
+        comparison ::= "=" | "!=" | "<" | ">" | "<=" | ">="
+
+             value ::= boolean_value | numeric_value
+
+     boolean_value ::= "true" | "false"
+
+     numeric_value ::= [ "-" ] digit ( digit )*+"." digit*
+
+             digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+            letter ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"  
+            </code></pre>
+          
+          <br>
+          <h2>
+            AV State Variables
+          </h2>
+          <table class="table">
+          <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Remarks</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>av_lane_id</td>
+            <td>String</td>
+            <td>The ID of AV's current lane.</td>
+          </tr>
+          <tr>
+            <td>av_speed</td>
+            <td>Number</td>
+            <td>Current speed of the AV (m/s).</td>
+          </tr>
+          <tr>
+            <td>av_heading</td>
+            <td>Number</td>
+            <td>Current heading of the AV (radian).</td>
+          </tr>
+          <tr>
+            <td>av_stopped</td>
+            <td>Bool</td>
+            <td>True if the AV is stopped.</td>
+          </tr>
+          </tbody>
+          </table>
+
+          <br>
+          <h2>
+            NPC State Variables
+          </h2>
+          <table class="table">
+          <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Remarks</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+            <td>npc_id</td>
+            <td>Number</td>
+            <td>The ID of the NPC.</td>
+          </tr>
+          <tr>
+            <td>npc_lane_id</td>
+            <td>String</td>
+            <td>The ID of NPC's current lane.</td>
+          </tr>
+          <tr>
+            <td>npc_speed</td>
+            <td>Number</td>
+            <td>Current speed of the NPC (m/s).</td>
+          </tr>
+          <tr>
+            <td>npc_heading</td>
+            <td>Number</td>
+            <td>Current heading of the NPC (radian).</td>
+          </tr>
+          <tr>
+            <td>npc_stopped</td>
+            <td>Bool</td>
+            <td>True if the NPC is stopped.</td>
+          </tr>
+          </tbody>
+          </table>
+
+          <br>
+          <h2>
+            AV Context Variables
+          </h2>
+          <table class="table">
+          <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Remarks</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+            <td>av_lane_id</td>
+            <td>String</td>
+            <td>The ID of the AV's current lane.</td>
+          </tr>
+          <tr>
+            <td>is_in_intsec</td>
+            <td>Bool</td>
+            <td>Whether the AV is in the intersection area.</td>
+          </tr>
+          <tr>
+            <td>is_on_crswlk</td>
+            <td>Bool</td>
+            <td>Whether the AV is on the crosswalk area.</td>
+          </tr>
+          <tr>
+            <td>speed_limit</td>
+            <td>Number</td>
+            <td>The speed limit of AV's current lane.</td>
+          </tr>
+          <tr>
+            <td>dist_to_intsec</td>
+            <td>Number</td>
+            <td>The distance between the AV and the next intersection.</td>
+          </tr>
+          <tr>
+            <td>dist_to_leave_intsec</td>
+            <td>Number</td>
+            <td>The distance required for the AV to leave the current intersection area.</td>
+          </tr>
+          <tr>
+            <td>is_straying</td>
+            <td>Bool</td>
+            <td>Whether the AV is straying from its current lane.</td>
+          </tr>
+          <tr>
+            <td>action</td>
+            <td>Enum</td>
+            <td>acceleration, deacceleration, or keeping.</td>
+          </tr>
+          </tbody>
+          </table>
+
+          <br>
+          <h2>
+            AV Interaction Variables
+          </h2>
+          <table class="table">
+          <thead>
+          <tr>
+            <th>Variable</th>
+            <th>Type</th>
+            <th>Remarks</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+            <td>npc_id</td>
+            <td>Number</td>
+            <td>The ID of the NPC.</td>
+          </tr>
+          <tr>
+            <td>npc_type</td>
+            <td>String</td>
+            <td>The type of the NPC.</td>
+          </tr>
+          <tr>
+            <td>dist_to_npc</td>
+            <td>Number</td>
+            <td>The distance between the AV and the NPC (m).</td>
+          </tr>
+          <tr>
+            <td>npc_orientation</td>
+            <td>Enum</td>
+            <td>same, reverse, or cross.</td>
+          </tr>
+          <tr>
+            <td>npc_position</td>
+            <td>Enum</td>
+            <td>ahead, next, blind, or behind.</td>
+          </tr>
+          <tr>
+            <td>npc_lateral</td>
+            <td>Enum</td>
+            <td>left, right, or center.</td>
+          </tr>
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+      <hr>
+
+    </div><!-- /.container -->
+
+    <!-- JavaScript -->
+    <script src="js/jquery-1.10.2.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script type="text/javascript">
+      var dt = new Date();
+      document.getElementById('getCurrentDate').innerHTML = dt.getFullYear();
+    </script>
+  </body>
+
+</html>

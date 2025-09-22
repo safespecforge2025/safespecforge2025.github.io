@@ -1,0 +1,42 @@
+     specification ::= "rule-ODD" string_literal
+                       "trigger" event
+                       "rule if" event "then" action
+                       "exit-trigger" event
+        
+             event ::= expression
+
+        expression ::= term ( "or" term )*
+
+              term ::= factor ( "and" factor )*
+
+            factor ::= "not" factor | primary
+
+           primary ::= atomic_predicate | "(" expression ")"
+
+  atomic_predicate ::= variable comparison value
+
+          variable ::= av_state_var | npc_state_var | av_context_var | av_interaction_var
+
+      av_state_var ::= identifier  // e.g., "av_speed"
+
+     npc_state_var ::= identifier  // e.g., "npc_position"
+
+    av_context_var ::= identifier  // e.g., "traffic_light"
+
+av_interaction_var ::= identifier  // e.g., "av_npc_collision"
+ 
+            action ::= speed_action | dist_action | other_action
+
+        identifier ::= letter ( letter | digit )*  
+
+        comparison ::= "=" | "!=" | "<" | ">" | "<=" | ">="
+
+             value ::= boolean_value | numeric_value
+
+     boolean_value ::= "true" | "false"
+
+     numeric_value ::= [ "-" ] digit ( digit )*+"." digit*
+
+             digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+            letter ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"  
